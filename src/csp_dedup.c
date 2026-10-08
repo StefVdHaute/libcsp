@@ -29,7 +29,7 @@ bool csp_dedup_is_duplicate(csp_packet_t * packet) {
 	unsigned int i = (csp_dedup_in-1) % CSP_DEDUP_COUNT;
 	while (i != csp_dedup_in) {
 		/* Check the timestamp */
-		if (time > csp_dedup_timestamp[i] + CSP_DEDUP_WINDOW_MS) {
+		if (time - csp_dedup_timestamp[i] > CSP_DEDUP_WINDOW_MS) {
 			break;
 		}
 		/* Check for match */
