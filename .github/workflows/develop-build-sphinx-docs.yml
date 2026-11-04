@@ -10,7 +10,8 @@ permissions:
 jobs:
   build-docs:
     if: github.repository_owner == 'libcsp'
-    runs-on: ubuntu-latest
+    # Sphinx 5.3 imports imghdr, which Python 3.13 removed
+    runs-on: ubuntu-24.04
 
     permissions:
       contents: write

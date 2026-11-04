@@ -60,15 +60,16 @@ jobs:
           sudo apt-get install libzmq3-dev libsocketcan-dev socat iproute2
           sudo apt-cache search linux-modules
 
-      - name: Setup packages on Ubuntu 22.04/24.04
-        if: ${{ runner.os == 'Linux' && (matrix.target.os == 'ubuntu-22.04' || matrix.target.os == 'ubuntu-24.04') }}
+      - name: Setup vcan kernel module on Linux
+        if: ${{ runner.os == 'Linux' }}
         run: |
-          sudo apt-get install linux-modules-extra-$(uname -r)
-
-      - name: Setup packages on Linux 26.04
-        if: ${{ runner.os == 'Linux' && (matrix.target.os == 'ubuntu-26.04') }}
-        run: |
-          sudo apt-get install linux-modules-$(uname -r)
+          if modinfo vcan > /dev/null 2>&1; then
+            echo "vcan is already available for $(uname -r)"
+          elif apt-cache show linux-modules-extra-$(uname -r) > /dev/null 2>&1; then
+            sudo apt-get install -y linux-modules-extra-$(uname -r)
+          else
+            sudo apt-get install -y linux-modules-$(uname -r)
+          fi
 
       - name: Setup build system packages on Linux
         if: ${{ runner.os == 'Linux' && matrix.buildsystem != 'waf' }}
